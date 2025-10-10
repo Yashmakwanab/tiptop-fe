@@ -10,9 +10,8 @@ import { useAuth } from "@/context/AuthContext";
 export default function UserInfoCard() {
   const { isOpen, openModal, closeModal } = useModal();
   const { user } = useAuth();
+  
   const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
     closeModal();
   };
   return (
@@ -29,7 +28,7 @@ export default function UserInfoCard() {
                 First Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user && user.firstname}
+                {user && user.firstName}
               </p>
             </div>
 
@@ -38,7 +37,7 @@ export default function UserInfoCard() {
                 Last Name
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user && user.lastname}
+                {user && user.lastName}
               </p>
             </div>
 
@@ -47,7 +46,7 @@ export default function UserInfoCard() {
                 Email address
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                {user && user.email}
+                {user && user.emailAddress}
               </p>
             </div>
 

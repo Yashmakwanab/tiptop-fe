@@ -32,7 +32,7 @@ export default function UserDropdown() {
           />
         </span>
 
-        <span className="block mr-1 font-medium text-theme-sm">{user && user.firstname}</span>
+        <span className="block mr-1 font-medium text-theme-sm">{user && user.firstName}</span>
 
         <svg
           className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${isOpen ? "rotate-180" : ""
@@ -60,10 +60,10 @@ export default function UserDropdown() {
       >
         <div>
           <span className="block font-medium text-gray-700 text-theme-sm dark:text-gray-400">
-            {user && user.firstname} {user && user.lastname}
+            {user && user.firstName} {user && user.lastName}
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
-            {user && user.email}
+            {user && user.emailAddress}
           </span>
         </div>
 

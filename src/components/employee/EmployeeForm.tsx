@@ -9,6 +9,7 @@ import Select from '@/components/form/Select';
 import Checkbox from '@/components/form/input/Checkbox';
 import DatePicker from '@/components/form/date-picker';
 import TextArea from '../form/input/TextArea';
+import { EyeCloseIcon, EyeIcon } from '@/icons';
 
 interface EmployeeFormProps {
     initialData?: Employee;
@@ -38,6 +39,7 @@ export default function EmployeeForm({
             firstName: '',
             lastName: '',
             emailAddress: '',
+            password: '',
             associates: '',
             roles: [],
             full_name: '',
@@ -65,10 +67,12 @@ export default function EmployeeForm({
             workExperienceDoc: '',
             educationCertificateDoc: '',
             paySlipsDoc: '',
+            isSuperAdmin: false,
         }
     );
 
     const [selectedRoles, setSelectedRoles] = useState<string[]>(initialData?.roles || []);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -179,17 +183,6 @@ export default function EmployeeForm({
                             />
                         </div>
                         <div>
-                            <Label>Country *</Label>
-                            <Input
-                                type="text"
-                                name="country"
-                                value={formData.country}
-                                onChange={handleChange}
-                                required
-                                disabled={loading}
-                            />
-                        </div>
-                        <div>
                             <Label>Aadhar Number</Label>
                             <Input
                                 type="text"
@@ -198,6 +191,49 @@ export default function EmployeeForm({
                                 onChange={handleChange}
                                 disabled={loading}
                             />
+                        </div>
+                        <div>
+                            <Label>
+                                Password
+                            </Label>
+                            <div className="relative">
+                                <Input
+                                    type={showPassword ? 'text' : 'password'}
+                                    name="password"
+                                    value={formData.password}
+                                    onChange={handleChange}
+                                    disabled={loading}
+                                    placeholder="Enter password (min 6 characters)"
+                                    minLength={6}
+                                    required
+                                    className='pr-[45px]'
+                                />
+                                <span
+                                    onClick={() => setShowPassword(!showPassword)}
+                                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                                >
+                                    {showPassword ? (
+                                        <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
+                                    ) : (
+                                        <EyeCloseIcon className="fill-gray-500 dark:fill-gray-400" />
+                                    )}
+                                </span>
+                            </div>
+                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                Minimum 6 characters required
+                            </p>
+                        </div>
+                        <div className="mt-4">
+                            <Label>Is Super Admin</Label>
+                            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
+                                <Checkbox
+                                    checked={formData.isSuperAdmin || false}
+                                    onChange={(val) =>
+                                        setFormData((prev) => ({ ...prev, isSuperAdmin: val }))
+                                    }
+                                    label={"Admin"}
+                                />
+                            </div>
                         </div>
                     </div>
                 </ComponentCard>
@@ -262,6 +298,17 @@ export default function EmployeeForm({
                                     setFormData((prev) => ({ ...prev, relationship: val }))
                                 }
                                 defaultValue={formData.relationship || ''}
+                            />
+                        </div>
+                        <div>
+                            <Label>Country *</Label>
+                            <Input
+                                type="text"
+                                name="country"
+                                value={formData.country}
+                                onChange={handleChange}
+                                required
+                                disabled={loading}
                             />
                         </div>
                     </div>

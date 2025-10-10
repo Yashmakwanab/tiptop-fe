@@ -3,6 +3,7 @@ export interface Employee {
   firstName: string;
   lastName: string;
   emailAddress: string;
+  password?: string;
   associates: string;
   roles: string[];
   full_name: string;
@@ -31,6 +32,8 @@ export interface Employee {
   paySlipsDoc?: string;
   category: string;
   is_deleted: boolean;
+  isSuperAdmin: boolean;
+  isActive: boolean;
   created_by: string;
   updated_by: string;
   createdAt?: string;
@@ -59,4 +62,5 @@ export interface EmployeeStatistics {
   total: number;
   working: number;
   resigned: number;
+  superAdmins: number;
 }

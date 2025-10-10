@@ -1,55 +1,171 @@
-"use client";
-import Checkbox from "@/components/form/input/Checkbox";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
-import Button from "@/components/ui/button/Button";
-import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "@/icons";
-import Link from "next/link";
-import React, { useState } from "react";
-import { useAuth } from "@/context/AuthContext";
+'use client';
+
+import Checkbox from '@/components/form/input/Checkbox';
+import Input from '@/components/form/input/InputField';
+import Label from '@/components/form/Label';
+import Button from '@/components/ui/button/Button';
+import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '@/icons';
+import Link from 'next/link';
+import React, { useState } from 'react';
+import { useAuth } from '@/context/AuthContext';
+import axios from 'axios';
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [otp, setOtp] = useState('');
+  const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [showOtpInput, setShowOtpInput] = useState(false);
+  const [otpEmail, setOtpEmail] = useState('');
 
-  const { login } = useAuth();
+  const { login, verifyOtp, resendOtp } = useAuth();
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
+    setError('');
     setLoading(true);
 
     try {
-      await login(email, password);
+      const result = await login(email, password);
+      
+      if (result.requireOtp) {
+        setShowOtpInput(true);
+        setOtpEmail(result.email || email);
+      }
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message || "Invalid email or password");
-      } else if (typeof err === 'object' && err !== null && 'response' in err) {
-        const axiosError = err as { response?: { data?: { message?: string } } };
-        setError(axiosError.response?.data?.message || "Invalid email or password");
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || 'Invalid email or password');
+      } else if (err instanceof Error) {
+        setError(err.message);
       } else {
-        setError("Invalid email or password");
+        setError('An unexpected error occurred');
       }
     } finally {
       setLoading(false);
     }
   };
 
+  const handleVerifyOtp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setError('');
+    setLoading(true);
+
+    try {
+      await verifyOtp(otpEmail, otp);
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || 'Invalid OTP');
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    setError('');
+    setLoading(true);
+
+    try {
+      await resendOtp(otpEmail);
+      setError('');
+      alert('OTP has been resent to your email');
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        setError(err.response?.data?.message || 'Failed to resend OTP');
+      } else if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError('An unexpected error occurred');
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (showOtpInput) {
+    return (
+      <div className="flex flex-col flex-1 lg:w-1/2 w-full">
+        <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
+          <button
+            onClick={() => {
+              setShowOtpInput(false);
+              setOtp('');
+              setError('');
+            }}
+            className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
+          >
+            <ChevronLeftIcon />
+            Back to login
+          </button>
+        </div>
+        <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+          <div>
+            <div className="mb-5 sm:mb-8">
+              <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+                Verify OTP
+              </h1>
+              <p className="text-sm text-gray-500 dark:text-gray-400">
+                Enter the 6-digit code sent to {otpEmail}
+              </p>
+            </div>
+
+            {error && (
+              <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 border border-red-400 rounded-lg dark:bg-red-900/20 dark:text-red-400 dark:border-red-800">
+                {error}
+              </div>
+            )}
+
+            <form onSubmit={handleVerifyOtp}>
+              <div className="space-y-6">
+                <div>
+                  <Label>
+                    OTP Code <span className="text-error-500">*</span>
+                  </Label>
+                  <Input
+                    placeholder="Enter 6-digit OTP"
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
+                    required
+                    disabled={loading}
+                    maxLength={6}
+                    className="text-center text-2xl tracking-widest"
+                  />
+                </div>
+
+                <div>
+                  <Button type="submit" className="w-full" size="sm" disabled={loading}>
+                    {loading ? 'Verifying...' : 'Verify OTP'}
+                  </Button>
+                </div>
+
+                <div className="text-center">
+                  <button
+                    type="button"
+                    onClick={handleResendOtp}
+                    disabled={loading}
+                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400 disabled:opacity-50"
+                  >
+                    Resend OTP
+                  </button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-      <div className="w-full max-w-md sm:pt-10 mx-auto mb-5">
-        <Link
-          href="/"
-          className="inline-flex items-center text-sm text-gray-500 transition-colors hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-300"
-        >
-          <ChevronLeftIcon />
-          Back to dashboard
-        </Link>
-      </div>
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div>
           <div className="mb-5 sm:mb-8">
@@ -124,7 +240,7 @@ export default function SignInForm() {
               <div className="space-y-6">
                 <div>
                   <Label>
-                    Email <span className="text-error-500">*</span>{" "}
+                    Email <span className="text-error-500">*</span>
                   </Label>
                   <Input
                     placeholder="info@gmail.com"
@@ -137,11 +253,11 @@ export default function SignInForm() {
                 </div>
                 <div>
                   <Label>
-                    Password <span className="text-error-500">*</span>{" "}
+                    Password <span className="text-error-500">*</span>
                   </Label>
                   <div className="relative">
                     <Input
-                      type={showPassword ? "text" : "password"}
+                      type={showPassword ? 'text' : 'password'}
                       placeholder="Enter your password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -175,21 +291,16 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button
-                    type="submit"
-                    className="w-full"
-                    size="sm"
-                    disabled={loading}
-                  >
-                    {loading ? "Signing in..." : "Sign in"}
+                  <Button type="submit" className="w-full" size="sm" disabled={loading}>
+                    {loading ? 'Signing in...' : 'Sign in'}
                   </Button>
                 </div>
               </div>
             </form>
 
-            <div className="mt-5">
+            {/* <div className="mt-5">
               <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
-                Don&apos;t have an account? {""}
+                Don&apos;t have an account?{' '}
                 <Link
                   href="/signup"
                   className="text-brand-500 hover:text-brand-600 dark:text-brand-400"
@@ -197,7 +308,7 @@ export default function SignInForm() {
                   Sign Up
                 </Link>
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>
