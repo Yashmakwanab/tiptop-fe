@@ -66,7 +66,7 @@ const navItems: NavItem[] = [
   {
     name: "Staff",
     icon: <GroupIcon />,
-    path: "/employees"
+    path: "/staff"
   },
   {
     icon: <DollarLineIcon />,
@@ -362,7 +362,7 @@ const AppSidebar: React.FC<{ user: Employee | null }> = ({ user }) => {
 
                     // ✅ Special role-to-menu mapping
                     const roleMap: Record<string, string[]> = {
-                      driversrequested: ["driverapplicationspending", "drivers"],
+                      driverapplicationspending: ["driverapplicationspending", "drivers"],
                       docsupdated: ["docsupdated", "docs"],
                     };
 

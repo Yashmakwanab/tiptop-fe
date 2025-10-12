@@ -21,12 +21,13 @@ const AVAILABLE_ROLES = [
     'DASHBOARD',
     'CUSTOMERS',
     'DRIVERS',
-    'DRIVERSREQUESTED',
+    'DRIVERAPPLICATIONSPENDING',
     'DOCSUPDATED',
     'BOOKINGS',
     'VEHICLES',
     'STAFF',
     'SURCHARGE',
+    'PROFILE',
 ];
 
 export default function EmployeeForm({

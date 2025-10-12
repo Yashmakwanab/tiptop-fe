@@ -17,7 +17,7 @@ export default function CreateEmployeePage() {
       setLoading(true);
       setError('');
       await employeeApi.create(data);
-      router.push('/employees');
+      router.push('/staff');
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || 'Failed to create employee');
