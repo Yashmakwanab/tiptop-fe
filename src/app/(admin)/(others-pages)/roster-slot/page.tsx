@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { rosterApi, Roster, RosterQueryParams } from "@/lib/rosterApi";
 import type { Column } from "@/types/table.types";
 import Spinner from "@/components/ui/spinner";
@@ -31,11 +31,7 @@ export default function RosterPage() {
     return () => clearTimeout(handler);
   }, [search]);
 
-  useEffect(() => {
-    fetchRosters();
-  }, [page, debouncedSearch, itemsPerPage]);
-
-  const fetchRosters = async () => {
+  const fetchRosters = useCallback(async () => {
     try {
       setLoading(true);
       const params: RosterQueryParams = { page, limit: itemsPerPage };
@@ -48,7 +44,11 @@ export default function RosterPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [itemsPerPage, page, debouncedSearch]);
+
+  useEffect(() => {
+    fetchRosters();
+  }, [page, debouncedSearch, itemsPerPage, fetchRosters]);
 
   const handleDelete = async (id: string) => {
     if (confirm("Are you sure you want to delete this roster?")) {

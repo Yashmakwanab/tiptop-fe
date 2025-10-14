@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { rosterApi, Roster, RosterQueryParams } from "@/lib/rosterApi";
 import type { Column } from "@/types/table.types";
 import Spinner from "@/components/ui/spinner";
@@ -31,36 +31,32 @@ export default function RosterPage() {
     const { isOpen, openModal, closeModal } = useModal();
     const [editData, setEditData] = useState<StaffRoster | null>(null);
 
-    useEffect(() => {
-        fetchEmployees();
-    }, []);
-
-    const fetchEmployees = async () => {
+    const fetchEmployees = useCallback(async () => {
         const params: EmployeeQueryParams = { page, limit: 100 };
         const response = await employeeApi.getAll(params);
         setEmployees(response.data);
-    };
+    }, [page]);
 
     useEffect(() => {
-        fetchRosters();
-    }, []);
+        fetchEmployees();
+    }, [fetchEmployees]);
 
-    const fetchRosters = async () => {
+    const fetchRosters = useCallback(async () => {
         const params: RosterQueryParams = { page, limit: 100 };
         const response = await rosterApi.getAll(params);
         setRosters(response.data);
-    };
+    }, [page]);
+
+    useEffect(() => {
+        fetchRosters();
+    }, [fetchRosters]);
 
     useEffect(() => {
         const handler = setTimeout(() => setDebouncedSearch(search), 500);
         return () => clearTimeout(handler);
     }, [search]);
 
-    useEffect(() => {
-        fetchStaffRosters();
-    }, [page, debouncedSearch, itemsPerPage]);
-
-    const fetchStaffRosters = async () => {
+        const fetchStaffRosters = useCallback(async () => {
         try {
             setLoading(true);
             const params: RosterQueryParams = { page, limit: itemsPerPage };
@@ -73,7 +69,11 @@ export default function RosterPage() {
         } finally {
             setLoading(false);
         }
-    };
+    }, [page, debouncedSearch, itemsPerPage]);
+
+    useEffect(() => {
+        fetchStaffRosters();
+    }, [page, debouncedSearch, itemsPerPage, fetchStaffRosters]);
 
     const handleDeleteMany = async () => {
         if (selectedIds.length === 0) return alert("Select at least one roster");

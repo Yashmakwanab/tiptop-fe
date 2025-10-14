@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation';
 import { employeeApi } from '@/lib/employeeApi';
@@ -45,11 +45,7 @@ export default function EmployeesPage() {
     if (!authLoading && !user) router.push('/signin');
   }, [user, authLoading, router]);
 
-  useEffect(() => {
-    if (user) fetchEmployees();
-  }, [page, debouncedSearch, workStatus, user]);
-
-  const fetchEmployees = async () => {
+    const fetchEmployees = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
@@ -70,7 +66,11 @@ export default function EmployeesPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [page, workStatus, search]);
+
+  useEffect(() => {
+    if (user) fetchEmployees();
+  }, [page, debouncedSearch, workStatus, user, fetchEmployees]);
 
   if (!user) return null;
 

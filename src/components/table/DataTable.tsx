@@ -18,6 +18,7 @@ interface DataTableProps<T> {
   onSelectionChange?: (selectedIds: (string | number)[]) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export function DataTable<T extends Record<string, any>>({
   columns,
   data,

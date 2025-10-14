@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
 import { employeeApi } from '@/lib/employeeApi';
 import { Employee } from '@/types/employee';
@@ -20,11 +20,7 @@ export default function EditEmployeePage() {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchEmployee();
-  }, [id]);
-
-  const fetchEmployee = async () => {
+    const fetchEmployee = useCallback(async () => {
     try {
       setLoading(true);
       const data = await employeeApi.getById(id);
@@ -38,7 +34,11 @@ export default function EditEmployeePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [id]);
+
+  useEffect(() => {
+    fetchEmployee();
+  }, [id, fetchEmployee]);
 
   const handleSubmit = async (data: Partial<Employee>) => {
     try {

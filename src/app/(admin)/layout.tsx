@@ -5,7 +5,7 @@ import { useSidebar } from "@/context/SidebarContext";
 import AppHeader from "@/layout/AppHeader";
 import AppSidebar from "@/layout/AppSidebar";
 import Backdrop from "@/layout/Backdrop";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useEffect } from "react";
 
 export default function AdminLayout({
@@ -16,33 +16,12 @@ export default function AdminLayout({
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
   const { user, loading } = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     if (!loading && !user) {
       router.push('/signin');
     }
   }, [user, loading, router]);
-
-  // useEffect(() => {
-  //   if (!pathname) return;
-
-  //   // Get first path segment (e.g. '/docs-updated/edit' → 'docs-updated')
-  //   const firstSegment = pathname.split('/')[1] || '';
-
-  //   // Normalize path: remove hyphens, make uppercase (e.g. 'docs-updated' → 'DOCSUPDATED')
-  //   const normalizedPath = firstSegment.replace(/-/g, '').toUpperCase();
-
-  //   // Normalize all roles the same way
-  //   const normalizedRoles = user && user?.roles?.map((role) => role.replace(/-/g, '').toUpperCase()) || []; 
-
-  //   // Check if allowed
-  //   const hasAccess = normalizedRoles.includes(normalizedPath);
-
-  //   if (!hasAccess) {
-  //     router.push('/');
-  //   }
-  // }, [pathname, user, router]);
 
   // Dynamic class for main content margin based on sidebar state
   const mainContentMargin = isMobileOpen
