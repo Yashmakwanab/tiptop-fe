@@ -64,14 +64,24 @@ const navItems: NavItem[] = [
     path: "/vehicles",
   },
   {
-    name: "Staff",
+    name: "HR",
     icon: <GroupIcon />,
-    path: "/staff"
+     subItems: [
+      { name: "Staff", path: "/staff", pro: false },
+      { name: "Staff Roster", path: "/staff-roster", pro: false },
+    ],
   },
   {
     icon: <DollarLineIcon />,
     name: "Surcharge",
     path: "/surcharge",
+  },
+  {
+    icon: <DollarLineIcon />,
+    name: "Settings",
+     subItems: [
+      { name: "Roster Slot", path: "/roster-slot", pro: false },
+    ],
   },
 ];
 
