@@ -1,6 +1,5 @@
 import { Outfit } from 'next/font/google';
 import './globals.css';
-import { Toaster } from 'react-hot-toast';
 
 import { SidebarProvider } from '@/context/SidebarContext';
 import { ThemeProvider } from '@/context/ThemeContext';
@@ -24,7 +23,6 @@ export default function RootLayout({
           </ThemeProvider>
         </AuthProvider>
       </body>
-      <Toaster position="bottom-right" reverseOrder={false} />
     </html>
   );
 }

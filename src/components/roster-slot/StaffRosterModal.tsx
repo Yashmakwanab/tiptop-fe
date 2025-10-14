@@ -8,7 +8,6 @@ import { Roster } from "@/lib/rosterApi";
 import { Employee } from "@/types/employee";
 import DatePicker from "../form/date-picker";
 import { StaffRoster, staffRosterApi } from "@/lib/staffRosterApi";
-import toast from "react-hot-toast";
 
 interface RosterModalProps {
   isOpen: boolean;
@@ -92,8 +91,6 @@ export default function StaffRosterModal({
 
       onSaved();
       onClose();
-      toast.error("Failed to save roster");
-
     } catch (err) {
       console.error("Error saving roster:", err);
     } finally {
