@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   Table,
   TableBody,
@@ -8,6 +8,12 @@ import {
 } from '@/components/ui/table';
 import { ActionButton, Column } from '@/types/table.types';
 import Checkbox from '../form/input/Checkbox';
+import { createPortal } from "react-dom";
+
+export function Portal({ children }: { children: ReactNode }) {
+  if (typeof document === "undefined") return null;
+  return createPortal(children, document.body);
+}
 
 interface DataTableProps<T> {
   columns: Column<T>[];
@@ -29,6 +35,10 @@ export function DataTable<T extends Record<string, any>>({
 }: DataTableProps<T>) {
   const [selectedRows, setSelectedRows] = useState<(string | number)[]>([]);
   const [openMenuId, setOpenMenuId] = useState<string | number | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{ top: number; left: number }>({
+    top: 0,
+    left: 0,
+  });
 
   const handleSelectAll = () => {
     if (selectedRows.length === data.length) {
@@ -114,7 +124,15 @@ export function DataTable<T extends Record<string, any>>({
                     {renderActions && (
                       <TableCell className="px-4 py-3 text-end relative">
                         <button
-                          onClick={() => setOpenMenuId(isMenuOpen ? null : rowId)}
+                          onClick={(e: React.MouseEvent) => {
+                            e.stopPropagation();
+                            const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                            setOpenMenuId(isMenuOpen ? null : rowId);
+                            setMenuPosition({
+                              top: rect.bottom + window.scrollY,
+                              left: rect.right - 180,
+                            });
+                          }}
                           className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 p-2"
                         >
                           <svg
@@ -125,14 +143,19 @@ export function DataTable<T extends Record<string, any>>({
                             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                           </svg>
                         </button>
-
                         {isMenuOpen && (
-                          <>
+                          <Portal>
                             <div
-                              className="fixed inset-0 z-10"
+                              className="fixed inset-0 z-40"
                               onClick={() => setOpenMenuId(null)}
                             />
-                            <div className="absolute right-8 top-8 z-20 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 min-w-[180px]">
+                            <div
+                              className="fixed z-50 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-lg py-1 min-w-[180px]"
+                              style={{
+                                top: menuPosition.top,
+                                left: menuPosition.left,
+                              }}
+                            >
                               {actions.map((action, idx) => (
                                 <button
                                   key={idx}
@@ -146,8 +169,9 @@ export function DataTable<T extends Record<string, any>>({
                                 </button>
                               ))}
                             </div>
-                          </>
+                          </Portal>
                         )}
+
                       </TableCell>
                     )}
                   </TableRow>

@@ -118,14 +118,14 @@ export default function RosterPage() {
             onSelectionChange={(ids) => setSelectedIds(ids.filter((id): id is string => typeof id === "string"))}
             renderActions={(roster) => [
               {
-                label: "✏️ Edit",
+                label: "Edit",
                 onClick: () => {
                   setEditData(roster);
                   openModal();
                 },
               },
               {
-                label: "🗑️ Delete",
+                label: "Delete",
                 onClick: () => handleDelete(roster._id!),
               },
             ]}

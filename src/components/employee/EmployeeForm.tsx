@@ -30,7 +30,6 @@ const AVAILABLE_ROLES = [
     'PROFILE',
     'ROSTERSLOT',
     'STAFFROSTER',
-    'HR'
 ];
 
 export default function EmployeeForm({
@@ -97,27 +96,24 @@ export default function EmployeeForm({
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        // Create payload excluding password by default
+        // Create payload with roles
         const payload: Partial<Employee> = {
             ...formData,
             roles: selectedRoles,
         };
 
-        // If editing existing employee
         if (initialData) {
-            // Include password only if user changed it (non-empty and different)
-            if (formData.password && formData.password.trim() !== '') {
-                payload.password = formData.password;
-            } else {
+            if (initialData.password === formData.password) {
                 delete payload.password;
             }
+        } else {
+            // If creating: password is required
+            if (!formData.password || formData.password.trim() === '') {
+                alert('Password is required for new employees');
+                return;
+            }
         }
-
-        // If creating a new employee
-        if (!initialData) {
-            payload.password = formData.password;
-        }
-
+        
         await onSubmit(payload);
     };
 

@@ -66,7 +66,7 @@ const navItems: NavItem[] = [
   {
     name: "HR",
     icon: <GroupIcon />,
-     subItems: [
+    subItems: [
       { name: "Staff", path: "/staff", pro: false },
       { name: "Staff Roster", path: "/staff-roster", pro: false },
     ],
@@ -79,7 +79,7 @@ const navItems: NavItem[] = [
   {
     icon: <DollarLineIcon />,
     name: "Settings",
-     subItems: [
+    subItems: [
       { name: "Roster Slot", path: "/roster-slot", pro: false },
     ],
   },
@@ -356,33 +356,52 @@ const AppSidebar: React.FC<{ user: Employee | null }> = ({ user }) => {
                 )}
               </h2>
               {renderMenuItems(
-                navItems.filter((item) => {
-                  // Always show Dashboard
-                  if (item.name.toLowerCase() === "dashboard") return true;
+                navItems
+                  .map((item) => {
+                    // Always show dashboard
+                    if (item.name.toLowerCase() === "dashboard") return item;
 
-                  // Normalize
-                  const itemKey = item.name.toLowerCase().replace(/\s+/g, "");
-                  const pathKey = item.path?.toLowerCase().replace(/\//g, "") as string;
+                    const itemKey = item.name.toLowerCase().replace(/\s+/g, "");
+                    const pathKey = item.path?.toLowerCase().replace(/\//g, "") as string;
 
-                  return user?.roles?.some((role: string) => {
-                    const roleKey = role.toLowerCase().replace(/\s+/g, "");
+                    // role normalization helper
+                    const hasPermission = (key: string) =>
+                      user?.roles?.some((role: string) => {
+                        const roleKey = role.toLowerCase().replace(/\s+/g, "");
+                        const roleMap: Record<string, string[]> = {
+                          driverapplicationspending: ["driverapplicationspending", "drivers"],
+                          docsupdated: ["docsupdated", "docs"],
+                        };
 
-                    // ✅ Direct matches
-                    if (roleKey.includes(itemKey) || roleKey.includes(pathKey)) return true;
+                        // direct + mapped role match
+                        return (
+                          roleKey.includes(key) ||
+                          roleKey.includes(pathKey) ||
+                          roleMap[roleKey]?.some((mapped) => key.includes(mapped))
+                        );
+                      });
 
-                    // ✅ Special role-to-menu mapping
-                    const roleMap: Record<string, string[]> = {
-                      driverapplicationspending: ["driverapplicationspending", "drivers"],
-                      docsupdated: ["docsupdated", "docs"],
-                    };
+                    // ✅ handle nested (subItems)
+                    if (item.subItems) {
+                      const allowedSubItems = item.subItems.filter((sub) => {
+                        const subKey = sub.name.toLowerCase().replace(/\s+/g, "");
+                        const subPathKey = sub.path.toLowerCase().replace(/\//g, "");
+                        return hasPermission(subKey) || hasPermission(subPathKey);
+                      });
 
-                    // Check mapped roles
-                    return roleMap[roleKey]?.some((key) => itemKey.includes(key));
-                  });
-                }),
+                      // show parent only if at least one child is allowed
+                      if (allowedSubItems.length > 0) {
+                        return { ...item, subItems: allowedSubItems };
+                      }
+                      return null;
+                    }
+
+                    // top-level item check
+                    return hasPermission(itemKey) || hasPermission(pathKey) ? item : null;
+                  })
+                  .filter(Boolean) as NavItem[],
                 "main"
               )}
-
             </div>
           </div>
         </nav>

@@ -14,7 +14,7 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { isExpanded, isHovered, isMobileOpen } = useSidebar();
-  const { user, loading } = useAuth();
+  const { user, loading, checkAuth } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
@@ -22,6 +22,10 @@ export default function AdminLayout({
       router.push('/signin');
     }
   }, [user, loading, router]);
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   // Dynamic class for main content margin based on sidebar state
   const mainContentMargin = isMobileOpen
