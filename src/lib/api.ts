@@ -2,7 +2,7 @@ import axios from 'axios';
 import Cookies from 'js-cookie';
 
 const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'https://tiptopdevelopers.com.au/api',
   headers: {
     'Content-Type': 'application/json',
   },
