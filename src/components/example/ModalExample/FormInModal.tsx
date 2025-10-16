@@ -10,8 +10,7 @@ import { useModal } from "@/hooks/useModal";
 export default function FormInModal() {
   const { isOpen, openModal, closeModal } = useModal();
   const handleSave = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
+    // Handle save logic here);
     closeModal();
   };
   return (

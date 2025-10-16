@@ -14,7 +14,6 @@ export default function UserMetaCard() {
   const { user } = useAuth();
   const handleSave = () => {
     // Handle save logic here
-    console.log("Saving changes...");
     closeModal();
   };
   return (

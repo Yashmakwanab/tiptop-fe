@@ -14,6 +14,8 @@ import StaffRosterModal from "@/components/roster-slot/StaffRosterModal";
 import { Employee, EmployeeQueryParams } from "@/types/employee";
 import { employeeApi } from "@/lib/employeeApi";
 import { StaffRoster, staffRosterApi } from "@/lib/staffRosterApi";
+import dayjs from "dayjs";
+import DatePicker from "@/components/form/date-picker";
 
 export default function RosterPage() {
     const [staffRosters, setStaffRosters] = useState<StaffRoster[]>([]);
@@ -26,26 +28,31 @@ export default function RosterPage() {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [total, setTotal] = useState(0);
     const [employees, setEmployees] = useState<Employee[]>([]);
+    const [rosterDates, setRosterDates] = useState<Date[]>([]);
+
+    const handleDateChange = useCallback((selectedDates: Date[]) => {
+        setRosterDates(selectedDates);
+    }, []);
 
     // modal states
     const { isOpen, openModal, closeModal } = useModal();
     const [editData, setEditData] = useState<StaffRoster | null>(null);
 
     const fetchEmployees = useCallback(async () => {
-        const params: EmployeeQueryParams = { page, limit: 100 };
+        const params: EmployeeQueryParams = { page: 1, limit: 100 };
         const response = await employeeApi.getAll(params);
         setEmployees(response.data);
-    }, [page]);
+    }, []);
 
     useEffect(() => {
         fetchEmployees();
     }, [fetchEmployees]);
 
     const fetchRosters = useCallback(async () => {
-        const params: RosterQueryParams = { page, limit: 100 };
+        const params: RosterQueryParams = { page: 1, limit: 100 };
         const response = await rosterApi.getAll(params);
         setRosters(response.data);
-    }, [page]);
+    }, []);
 
     useEffect(() => {
         fetchRosters();
@@ -56,7 +63,7 @@ export default function RosterPage() {
         return () => clearTimeout(handler);
     }, [search]);
 
-        const fetchStaffRosters = useCallback(async () => {
+    const fetchStaffRosters = useCallback(async () => {
         try {
             setLoading(true);
             const params: RosterQueryParams = { page, limit: itemsPerPage };
@@ -86,7 +93,11 @@ export default function RosterPage() {
 
     const columns: Column<StaffRoster>[] = [
         { key: "user_name", label: "User Name" },
-        { key: "roster_date", label: "Roster Date" },
+        {
+            key: "roster_date",
+            label: "Roster Date",
+            render: (_, row) => `${dayjs(row.roster_date).format("DD-MM-YYYY")}`,
+        },
         {
             key: "start_time",
             label: "Slot",
@@ -119,6 +130,14 @@ export default function RosterPage() {
                         </Button>
                     </div>
                 }
+            />
+            <DatePicker
+                id="roster-dates"
+                label=""
+                mode="multiple"
+                placeholder="Select dates"
+                onChange={handleDateChange}
+                defaultDate={rosterDates}
             />
 
             <FilterBar

@@ -10,6 +10,8 @@ export interface StaffRoster {
   roster_dates: string[]; // Array of date strings in ISO format
   start_time: string;
   end_time: string;
+  roster_date: string;
+  full_name: string;
 }
 
 export interface RosterQueryParams {

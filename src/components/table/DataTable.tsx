@@ -105,7 +105,7 @@ export function DataTable<T extends Record<string, any>>({
                 const isMenuOpen = openMenuId === rowId;
 
                 return (
-                  <TableRow key={String(rowId)}>
+                  <TableRow key={String(rowId)} className={` ${row.roster_type === "Week Off" && 'bg-[#fa8072]'} ${row.roster_type === "Leave" && 'bg-[#fe9a00]'} ${row.roster_type === "Sick Leave" && 'bg-[#ad46ff]'} ${row.roster_type === "Week Off" && 'bg-[#00a63e]'}`}>
                     {selectable && (
                       <TableCell className="px-5 py-4">
                         <Checkbox

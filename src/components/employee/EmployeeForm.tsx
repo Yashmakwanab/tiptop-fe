@@ -30,6 +30,7 @@ const AVAILABLE_ROLES = [
     'PROFILE',
     'ROSTERSLOT',
     'STAFFROSTER',
+    'ROSTERCALANDER',
 ];
 
 export default function EmployeeForm({

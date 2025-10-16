@@ -67,6 +67,7 @@ const navItems: NavItem[] = [
     name: "HR",
     icon: <GroupIcon />,
     subItems: [
+      { name: "Roster Calander", path: "/roster-calander", pro: false },
       { name: "Staff", path: "/staff", pro: false },
       { name: "Staff Roster", path: "/staff-roster", pro: false },
     ],
