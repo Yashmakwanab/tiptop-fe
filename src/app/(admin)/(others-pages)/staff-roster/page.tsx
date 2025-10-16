@@ -15,7 +15,6 @@ import { Employee, EmployeeQueryParams } from "@/types/employee";
 import { employeeApi } from "@/lib/employeeApi";
 import { StaffRoster, staffRosterApi } from "@/lib/staffRosterApi";
 import dayjs from "dayjs";
-import DatePicker from "@/components/form/date-picker";
 
 export default function RosterPage() {
     const [staffRosters, setStaffRosters] = useState<StaffRoster[]>([]);
@@ -28,11 +27,6 @@ export default function RosterPage() {
     const [itemsPerPage, setItemsPerPage] = useState(10);
     const [total, setTotal] = useState(0);
     const [employees, setEmployees] = useState<Employee[]>([]);
-    const [rosterDates, setRosterDates] = useState<Date[]>([]);
-
-    const handleDateChange = useCallback((selectedDates: Date[]) => {
-        setRosterDates(selectedDates);
-    }, []);
 
     // modal states
     const { isOpen, openModal, closeModal } = useModal();
@@ -130,14 +124,6 @@ export default function RosterPage() {
                         </Button>
                     </div>
                 }
-            />
-            <DatePicker
-                id="roster-dates"
-                label=""
-                mode="multiple"
-                placeholder="Select dates"
-                onChange={handleDateChange}
-                defaultDate={rosterDates}
             />
 
             <FilterBar
