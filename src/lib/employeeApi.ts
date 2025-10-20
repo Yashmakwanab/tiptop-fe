@@ -7,7 +7,6 @@ import {
 } from '@/types/employee';
 
 export const employeeApi = {
-  // Get all employees with pagination and filters
   getAll: async (params: EmployeeQueryParams): Promise<EmployeeResponse> => {
     const response = await api.get('/employee', { params });
     return response.data;

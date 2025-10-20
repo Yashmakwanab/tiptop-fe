@@ -4,7 +4,8 @@ import { useEffect, useMemo, useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Label from "@/components/form/Label";
-import { Roster, rosterApi } from "@/lib/rosterApi";
+import { rosterApi } from "@/lib/rosterApi";
+import { Roster } from "@/types/roster";
 
 interface RosterModalProps {
   isOpen: boolean;

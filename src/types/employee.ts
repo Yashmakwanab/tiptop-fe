@@ -5,7 +5,9 @@ export interface Employee {
   emailAddress: string;
   password?: string;
   associates: string;
-  roles: string[];
+  role: string | {
+    permissions: { menuId: string }[];
+  };
   full_name: string;
   user_name: string;
   user_name_id: string;

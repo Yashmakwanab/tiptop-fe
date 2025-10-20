@@ -56,7 +56,7 @@ export default function EmployeesPage() {
       const response = await employeeApi.getAll(params);
       setEmployees(response.data);
       // setTotalPages(response.pagination.totalPages);
-      setTotal(response.pagination.total);
+      setTotal(response?.pagination?.total);
     } catch (err) {
       if (axios.isAxiosError(err)) {
         setError(err.response?.data?.message || 'Failed to fetch employees');
@@ -86,7 +86,7 @@ export default function EmployeesPage() {
           </p>
         </div>
         <Link
-          href="/staff/create"
+          href="/hr/staff/create"
           className="bg-brand-500 text-white px-4 py-2 rounded-lg hover:bg-brand-600 transition"
         >
           + Add Employee
@@ -192,7 +192,7 @@ export default function EmployeesPage() {
 
                       <TableCell className="px-4 py-3 text-end space-x-2">
                         <Link
-                          href={`/staff/${emp._id}/edit`}
+                          href={`/hr/staff/${emp._id}/edit`}
                           className="text-blue-600 hover:text-blue-800"
                         >
                           Edit

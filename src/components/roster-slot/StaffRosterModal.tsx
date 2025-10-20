@@ -4,10 +4,10 @@ import { useEffect, useState, useMemo, useCallback } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Label from "@/components/form/Label";
-import { Roster } from "@/lib/rosterApi";
 import { Employee } from "@/types/employee";
 import DatePicker from "../form/date-picker";
 import { StaffRoster, staffRosterApi } from "@/lib/staffRosterApi";
+import { Roster } from "@/types/roster";
 
 interface RosterModalProps {
   isOpen: boolean;

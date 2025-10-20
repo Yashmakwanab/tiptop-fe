@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Employee } from '@/types/employee';;
 import ComponentCard from '@/components/common/ComponentCard';
 import Label from '@/components/form/Label';
@@ -10,28 +10,14 @@ import Checkbox from '@/components/form/input/Checkbox';
 import DatePicker from '@/components/form/date-picker';
 import TextArea from '../form/input/TextArea';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
+import { roleApi } from '@/lib/roleApi';
+import { Role, RoleQueryParams } from '@/types/role';
 
 interface EmployeeFormProps {
     initialData?: Employee;
     onSubmit: (data: Partial<Employee>) => Promise<void>;
     loading: boolean;
 }
-
-const AVAILABLE_ROLES = [
-    'DASHBOARD',
-    'CUSTOMERS',
-    'DRIVERS',
-    'DRIVERAPPLICATIONSPENDING',
-    'DOCSUPDATED',
-    'BOOKINGS',
-    'VEHICLES',
-    'STAFF',
-    'SURCHARGE',
-    'PROFILE',
-    'ROSTERSLOT',
-    'STAFFROSTER',
-    'ROSTERCALANDER',
-];
 
 export default function EmployeeForm({
     initialData,
@@ -45,7 +31,7 @@ export default function EmployeeForm({
             emailAddress: '',
             password: '',
             associates: '',
-            roles: [],
+            role: '',
             full_name: '',
             user_name: '',
             user_name_id: '',
@@ -74,9 +60,19 @@ export default function EmployeeForm({
             isSuperAdmin: false,
         }
     );
-
-    const [selectedRoles, setSelectedRoles] = useState<string[]>(initialData?.roles || []);
+    const [roles, setRoles] = useState<Role[]>([]);
+    const [role, setRole] = useState<string>(initialData?.role as string || '');
     const [showPassword, setShowPassword] = useState(false);
+
+    const fetchRoles = useCallback(async () => {
+        const params: RoleQueryParams = { page: 1, limit: 100 };
+        const response = await roleApi.getAllRoles(params);
+        setRoles(response.data);
+    }, []);
+
+    useEffect(() => {
+        fetchRoles();
+    }, [fetchRoles]);
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
@@ -88,19 +84,13 @@ export default function EmployeeForm({
         }));
     };
 
-    const handleRoleToggle = (role: string) => {
-        setSelectedRoles((prev) =>
-            prev.includes(role) ? prev.filter((r) => r !== role) : [...prev, role]
-        );
-    };
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         // Create payload with roles
         const payload: Partial<Employee> = {
             ...formData,
-            roles: selectedRoles,
+            role,
         };
 
         if (initialData) {
@@ -114,7 +104,7 @@ export default function EmployeeForm({
                 return;
             }
         }
-        
+
         await onSubmit(payload);
     };
 
@@ -433,18 +423,13 @@ export default function EmployeeForm({
 
                     {/* Roles */}
                     <div className="mt-4">
-                        <Label>Roles</Label>
-                        <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mt-2">
-                            {AVAILABLE_ROLES.map((role) => (
-                                <Checkbox
-                                    key={role}
-                                    checked={selectedRoles.includes(role)}
-                                    onChange={() => handleRoleToggle(role)}
-                                    label={role}
-                                    disabled={loading}
-                                />
-                            ))}
-                        </div>
+                        <Label>Role</Label>
+                        <Select
+                            options={roles.map((r) => ({ value: r._id, label: r.name }))}
+                            placeholder="Select Role"
+                            defaultValue={role}
+                            onChange={(val) => setRole(val)}
+                        />
                     </div>
                 </ComponentCard>
 

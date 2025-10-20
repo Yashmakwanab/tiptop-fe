@@ -76,10 +76,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/');
   };
 
-  const logout = () => {
-    Cookies.remove('token');
-    setUser(null);
-    router.push('/signin');
+  const logout = async () => {
+    const response = await api.post('/auth/logout',);
+    if(response){
+      Cookies.remove('token');
+      setUser(null);
+      router.push('/signin');
+    }
   };
 
   return (
