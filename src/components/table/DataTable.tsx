@@ -66,7 +66,7 @@ export function DataTable<T extends Record<string, any>>({
   };
 
   const renderRows = (rows: T[], level = 0): JSX.Element[] => {
-    return rows.flatMap((row) => {
+    return rows?.flatMap((row) => {
       const rowId = row[idKey];
       const actions = renderActions?.(row) || [];
       const isMenuOpen = openMenuId === rowId;

@@ -4,10 +4,11 @@ import { useEffect, useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Label from "@/components/form/Label";
-import { X, Plus } from "lucide-react";
 import { menuApi } from "@/lib/menuApi";
 import { Menu } from "@/types/menu";
 import { useAuth } from "@/context/AuthContext";
+import CloseIcon from '@mui/icons-material/Close';
+import AddIcon from '@mui/icons-material/Add';
 
 interface MenuModalProps {
     isOpen: boolean;
@@ -265,7 +266,7 @@ export default function MenuModal({
                                     onClick={addSubmenu}
                                     className="flex items-center gap-1"
                                 >
-                                    <Plus size={16} />
+                                    <AddIcon fontSize="small" />
                                     Add Submenu
                                 </Button>
                             </div>
@@ -313,7 +314,7 @@ export default function MenuModal({
                                                 onClick={() => removeSubmenu(submenu.tempId)}
                                                 className="mt-6 text-red-500 hover:text-red-700 p-1"
                                             >
-                                                <X size={18} />
+                                                <CloseIcon fontSize="small"/>
                                             </button>
                                         </div>
                                     </div>

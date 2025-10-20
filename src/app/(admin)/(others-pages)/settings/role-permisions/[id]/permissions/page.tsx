@@ -4,11 +4,11 @@ import { useState, useEffect, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { roleApi } from "@/lib/roleApi";
 import Button from "@/components/ui/button/Button";
-import { ArrowLeft } from "lucide-react";
 import PermissionMatrix from "@/components/role/AssignPermission";
 import Spinner from "@/components/ui/spinner";
 import { Role } from "@/types/role";
 import { useAuth } from "@/context/AuthContext";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 export default function RolePermissionsPage() {
     const params = useParams();
@@ -73,7 +73,7 @@ export default function RolePermissionsPage() {
                     onClick={() => router.push("/settings/role-permisions")}
                     className="mb-4"
                 >
-                    <ArrowLeft size={16} className="mr-2" />
+                    <ArrowBackIcon fontSize="small" className="mr-2" />
                     Back to Roles
                 </Button>
 

@@ -4,9 +4,10 @@ import { useState, useEffect, useCallback } from "react";
 import { roleApi } from "@/lib/roleApi";
 import { Menu, MenuQueryParams } from "@/types/menu";
 import { menuApi } from "@/lib/menuApi";
-import { ChevronDown, ChevronRight } from "lucide-react";
 import Checkbox from "../form/input/Checkbox";
 import Spinner from "../ui/spinner";
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
 interface PermissionMatrixProps {
     roleId: string;
@@ -93,7 +94,7 @@ export default function PermissionMatrix({ roleId, onSaved, initialSelectedIds }
                 <div className="flex items-center space-x-2 pl-4" style={{ paddingLeft: `${level * 20}px` }}>
                     {hasChildren && (
                         <button onClick={() => toggleExpand(menu._id!)} className="focus:outline-none">
-                            {isExpanded ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                            {isExpanded ? <KeyboardArrowDownIcon fontSize="small" /> : <ChevronRightIcon fontSize="small" />}
                         </button>
                     )}
                     {!hasChildren && <div className="w-4" />}
