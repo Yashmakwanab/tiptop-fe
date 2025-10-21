@@ -26,13 +26,13 @@ const ROSTER_TYPES = [
   { label: "Leave", value: "Leave" }
 ] as const;
 
-export default function StaffRosterModal({ 
-  isOpen, 
-  onClose, 
-  onSaved, 
-  editData, 
-  employees, 
-  rosters 
+export default function StaffRosterModal({
+  isOpen,
+  onClose,
+  onSaved,
+  editData,
+  employees,
+  rosters
 }: RosterModalProps) {
   const [username, setUsername] = useState("");
   const [rosterType, setRosterType] = useState("");
@@ -91,6 +91,10 @@ export default function StaffRosterModal({
 
       onSaved();
       onClose();
+      setUsername("");
+      setRosterType("");
+      setRosterDates([]);
+      setTimeSlot("");
     } catch (err) {
       console.error("Error saving roster:", err);
     } finally {
@@ -188,16 +192,16 @@ export default function StaffRosterModal({
 
           {/* Action Buttons */}
           <div className="flex items-center justify-end gap-3 mt-3">
-            <Button 
-              size="sm" 
-              variant="outline" 
+            <Button
+              size="sm"
+              variant="outline"
               onClick={handleCancel}
               disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button 
-              size="sm" 
+            <Button
+              size="sm"
               disabled={!isFormValid || isSubmitting}
               onClick={handleSave}
             >

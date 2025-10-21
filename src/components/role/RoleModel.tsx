@@ -47,6 +47,7 @@ export default function RoleModal({
             }
             onSaved();
             onClose();
+            setName("");
         } catch (err) {
             console.error("Error saving roster:", err);
         }

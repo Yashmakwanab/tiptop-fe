@@ -87,6 +87,9 @@ export default function RosterModal({
       }
       onSaved();
       onClose();
+      setStartTime("");
+      setEndTime("");
+      setTotalHrs("");
     } catch (err) {
       console.error("Error saving roster:", err);
     }
