@@ -12,6 +12,9 @@ import TextArea from '../form/input/TextArea';
 import { EyeCloseIcon, EyeIcon } from '@/icons';
 import { roleApi } from '@/lib/roleApi';
 import { Role, RoleQueryParams } from '@/types/role';
+import dayjs from 'dayjs';
+import customParseFormat from "dayjs/plugin/customParseFormat";
+dayjs.extend(customParseFormat);
 
 interface EmployeeFormProps {
     initialData?: Employee;
@@ -84,44 +87,6 @@ export default function EmployeeForm({
         }));
     };
 
-    const resetForm = () => {
-        setFormData({
-            firstName: '',
-            lastName: '',
-            emailAddress: '',
-            password: '',
-            associates: '',
-            role: '',
-            full_name: '',
-            user_name: '',
-            user_name_id: '',
-            address: '',
-            country: '',
-            user_email: '',
-            user_phone: '',
-            emergency_contact_name: '',
-            emergency_contact: '',
-            relationship: '',
-            aadhar_no: '',
-            google_play_id: '',
-            bank_name: '',
-            bank_account_no: '',
-            bank_ifsc_no: '',
-            joining_date: '',
-            work_status: 'Working',
-            resigned_date: '',
-            monthlySalary: '',
-            date_of_birth: '',
-            category: '',
-            identityProofDoc: '',
-            workExperienceDoc: '',
-            educationCertificateDoc: '',
-            paySlipsDoc: '',
-            isSuperAdmin: false,
-        });
-        setRole('');
-    };
-
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -129,7 +94,13 @@ export default function EmployeeForm({
         const payload: Partial<Employee> = {
             ...formData,
             role,
-        };
+            date_of_birth: initialData && initialData.date_of_birth === formData.date_of_birth ? formData.date_of_birth : formData.date_of_birth
+            ? dayjs(formData.date_of_birth, "DD-MM-YYYY").format("YYYY-MM-DD")
+                : undefined,
+            joining_date: initialData && initialData.joining_date === formData.joining_date ? formData.joining_date : formData.joining_date
+                ? dayjs(formData.joining_date, "DD-MM-YYYY").format("YYYY-MM-DD")
+                : undefined,
+            };
 
         if (initialData) {
             if (initialData.password === formData.password) {
@@ -144,7 +115,6 @@ export default function EmployeeForm({
         }
 
         await onSubmit(payload);
-        resetForm();
     };
 
     return (

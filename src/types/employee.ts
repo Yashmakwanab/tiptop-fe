@@ -23,11 +23,11 @@ export interface Employee {
   bank_name: string;
   bank_account_no: string;
   bank_ifsc_no: string;
-  joining_date: string;
+  joining_date: string | Date;
   work_status: string;
   resigned_date?: string;
   monthlySalary: string;
-  date_of_birth: string;
+  date_of_birth: string | Date;
   identityProofDoc?: string;
   workExperienceDoc?: string;
   educationCertificateDoc?: string;
