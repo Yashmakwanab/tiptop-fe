@@ -9,7 +9,7 @@ import { Employee } from '@/types/employee';
 interface AuthContextType {
   user: Employee | null;
   loading: boolean;
-  login: (email: string, password: string) => Promise<{ requireOtp: boolean; email?: string }>;
+  login: (email: string, password: string, ipAddress: string) => Promise<{ requireOtp: boolean; email?: string }>;
   verifyOtp: (email: string, otp: string) => Promise<void>;
   resendOtp: (email: string) => Promise<void>;
   register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
@@ -38,8 +38,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setLoading(false);
   };
 
-  const login = async (email: string, password: string) => {
-    const response = await api.post('/auth/login', { email, password });
+  const login = async (email: string, password: string, ipAddress: string) => {
+    const response = await api.post('/auth/login', { email, password, ipAddress });
 
     if (response.data.requireOtp) {
       // OTP required for regular employees

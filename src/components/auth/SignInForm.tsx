@@ -5,8 +5,7 @@ import Input from '@/components/form/input/InputField';
 import Label from '@/components/form/Label';
 import Button from '@/components/ui/button/Button';
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from '@/icons';
-import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import axios from 'axios';
 
@@ -20,8 +19,26 @@ export default function SignInForm() {
   const [loading, setLoading] = useState(false);
   const [showOtpInput, setShowOtpInput] = useState(false);
   const [otpEmail, setOtpEmail] = useState('');
+  const [ipAddress, setIpAddress] = useState('');
 
   const { login, verifyOtp, resendOtp } = useAuth();
+
+  useEffect(() => {
+    const fetchIp = async () => {
+      try {
+        const res = await fetch('https://api.ipify.org?format=json');
+        const data = await res.json();
+        if (data?.ip) {
+          setIpAddress(data.ip);
+        } else {
+          console.error('Unexpected IP response:', data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch IP:', err);
+      }
+    };
+    fetchIp();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -29,8 +46,8 @@ export default function SignInForm() {
     setLoading(true);
 
     try {
-      const result = await login(email, password);
-      
+      const result = await login(email, password, ipAddress);
+
       if (result.requireOtp) {
         setShowOtpInput(true);
         setOtpEmail(result.email || email);
@@ -283,12 +300,6 @@ export default function SignInForm() {
                       Keep me logged in
                     </span>
                   </div>
-                  <Link
-                    href="/reset-password"
-                    className="text-sm text-brand-500 hover:text-brand-600 dark:text-brand-400"
-                  >
-                    Forgot password?
-                  </Link>
                 </div>
                 <div>
                   <Button type="submit" className="w-full" size="sm" disabled={loading}>
